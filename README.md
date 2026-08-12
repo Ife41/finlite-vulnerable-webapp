@@ -1,4 +1,4 @@
-# FinLite — Intentionally Vulnerable Fintech-Style Web App
+# FinLite : Intentionally Vulnerable Fintech-Style Web App
 
 FinLite is a small, self-built web application designed to practice and document Application Security testing. It simulates a fintech-style organization portal, user accounts, invoices, and a company announcements CMS, with a set of intentional, clearly documented vulnerabilities.
 
