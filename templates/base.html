@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}FinLite{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if session.get('user_id') %}
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="{{ url_for('dashboard_page') }}" class="brand">FinLite</a>
+      <nav class="topnav">
+        <a href="{{ url_for('dashboard_page') }}">Dashboard</a>
+        <a href="{{ url_for('search_page') }}">Search invoices</a>
+        <a href="{{ url_for('posts_page') }}">Announcements</a>
+      </nav>
+      <div class="topbar-user">
+        <span class="user-chip">{{ session_username }}</span>
+        <form action="{{ url_for('logout_page') }}" method="post" class="inline-form">
+          <button type="submit" class="link-btn">Log out</button>
+        </form>
+      </div>
+    </div>
+  </header>
+  {% endif %}
+
+  <main class="page">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
