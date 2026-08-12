@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - FinLite{% endblock %}
+{% block content %}
+<h1>Your invoices</h1>
+<p class="subtitle">Logged in as <strong>{{ user.username }}</strong> <span class="role-badge">{{ user.role }}</span></p>
+<div class="card">
+  {% if invoices %}
+  <table>
+    <thead><tr><th>Invoice ID</th><th>Description</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr>
+        <td class="invoice-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td>
+        <td>{{ inv.description }}</td>
+        <td class="amount">${{ "%.2f"|format(inv.amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No invoices found for your account.</div>
+  {% endif %}
+</div>
+{% endblock %}
