@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Invoice #{{ invoice.id }} - FinLite{% endblock %}
+{% block content %}
+<h1>Invoice #{{ invoice.id }}</h1>
+<p class="subtitle"><a href="{{ url_for('dashboard_page') }}">&larr; Back to dashboard</a></p>
+<div class="card">
+  <table>
+    <tbody>
+      <tr><td><strong>Invoice ID</strong></td><td class="invoice-id">#{{ invoice.id }}</td></tr>
+      <tr><td><strong>Owner ID</strong></td><td class="invoice-id">{{ invoice.owner_id }}</td></tr>
+      <tr><td><strong>Description</strong></td><td>{{ invoice.description }}</td></tr>
+      <tr><td><strong>Amount</strong></td><td class="amount">${{ "%.2f"|format(invoice.amount) }}</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
