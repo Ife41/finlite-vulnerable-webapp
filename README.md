@@ -1,6 +1,6 @@
 # FinLite — Intentionally Vulnerable Fintech-Style Web App
 
-FinLite is a small, self-built web application designed to practice and document Application Security testing. It simulates a fintech-style organization portal — user accounts, invoices, and a company announcements CMS — with a set of intentional, clearly documented vulnerabilities.
+FinLite is a small, self-built web application designed to practice and document Application Security testing. It simulates a fintech-style organization portal, user accounts, invoices, and a company announcements CMS, with a set of intentional, clearly documented vulnerabilities.
 
 This project was built after feedback from a senior Application Security Engineer at a fintech company, who highlighted **IDOR (Insecure Direct Object Reference)** as one of the most common real-world vulnerabilities in financial applications, and challenged finding a practical way to catch it before deployment rather than after.
 
