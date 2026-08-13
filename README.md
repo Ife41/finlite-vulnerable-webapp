@@ -71,7 +71,7 @@ python3 app.py
 
 The app runs at `http://127.0.0.1:5000`. Web UI starts at `/ui/login`.
 
-Re-running `python3 db_setup.py` at any point wipes and rebuilds the database with fresh seed data — useful for resetting after testing.
+Re-running `python3 db_setup.py` at any point wipes and rebuilds the database with fresh seed data, useful for resetting after testing.
 
 ---
 
