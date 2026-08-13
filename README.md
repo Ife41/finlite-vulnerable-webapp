@@ -2,7 +2,7 @@
 
 FinLite is a small, self-built web application designed to practice and document Application Security testing. It simulates a fintech-style organization portal, user accounts, invoices, and a company announcements CMS, with a set of intentional, clearly documented vulnerabilities.
 
-This project was built after **IDOR (Insecure Direct Object Reference)** as one of the most common real-world vulnerabilities in financial applications, and challenged finding a practical way to catch it before deployment rather than after.
+This project was built after noticing **IDOR (Insecure Direct Object Reference)** as one of the most common real-world vulnerabilities in financial applications, and I took up the challenge towards finding a practical way to catch it before deployment rather than after.
 
 > ⚠️ **This application is intentionally insecure.** Run it only in an isolated local environment. Never deploy it to a public network or the internet.
 
@@ -10,7 +10,7 @@ This project was built after **IDOR (Insecure Direct Object Reference)** as one 
 
 ## Why this project exists
 
-- **Practical AppSec skill-building** — designing an app *and* attacking it builds a fuller understanding of vulnerabilities than either alone.
+- **Practical AppSec skill-building**  designing an app *and* attacking it builds a fuller understanding of vulnerabilities than either alone.
 - **A realistic target for a build-time IDOR detection tool** — a related project (Semgrep rule + CI/CD pipeline) uses this app's known-vulnerable endpoints as its test case. See [finlite-idor-detection](#) *(link once published)*.
 - **A documented exploitation target** — the actual attack write-up against this app lives in a separate repo: [enterprise-homelab-pentest](https://github.com/Ife41/enterprise-homelab-pentest/blob/main/docs/06-web-exploitation.md)
 
