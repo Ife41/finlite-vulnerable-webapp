@@ -4,15 +4,15 @@ FinLite is a small, self-built web application designed to practice and document
 
 This project was built after noticing **IDOR (Insecure Direct Object Reference)** as one of the most common real-world vulnerabilities in financial applications, and I took up the challenge towards finding a practical way to catch it before deployment rather than after.
 
-> ⚠️ **This application is intentionally insecure.** Run it only in an isolated local environment. Never deploy it to a public network or the internet.
+> ⚠️ **This application is intentionally insecure.** Run it only in an isolated local environment. 
 
 ---
 
 ## Why this project exists
 
 - **Practical AppSec skill-building**  designing an app *and* attacking it builds a fuller understanding of vulnerabilities than either alone.
-- **A realistic target for a build-time IDOR detection tool** — a related project (Semgrep rule + CI/CD pipeline) uses this app's known-vulnerable endpoints as its test case. See [finlite-idor-detection](#) *(link once published)*.
-- **A documented exploitation target** — the actual attack write-up against this app lives in a separate repo: [enterprise-homelab-pentest](https://github.com/Ife41/enterprise-homelab-pentest/blob/main/docs/06-web-exploitation.md)
+- **A realistic target for a build-time IDOR detection tool**  a related project (Semgrep rule + CI/CD pipeline) uses this app's known-vulnerable endpoints as its test case. See [finlite-idor-detection](#) *(link once published)*.
+- **A documented exploitation target** the actual attack write-up against this app lives in a separate repo: [enterprise-homelab-pentest](https://github.com/Ife41/enterprise-homelab-pentest/blob/main/docs/06-web-exploitation.md)
 
 ---
 
@@ -20,7 +20,7 @@ This project was built after noticing **IDOR (Insecure Direct Object Reference)*
 
 - **Backend:** Python 3, Flask
 - **Database:** SQLite (single-file, no separate DB server required)
-- **Frontend:** Server-rendered HTML (Jinja2 templates), plain CSS — no JS framework
+- **Frontend:** Server-rendered HTML (Jinja2 templates), plain CSS, no JS framework
 - **Auth:** Session-based (Flask's built-in signed cookie sessions)
 
 ```
@@ -45,9 +45,9 @@ finlite-app/
 
 ## Data model
 
-**users** — id, username, email, password, role (`customer` / `admin`)
-**invoices** — id, owner_id, amount, description
-**posts** — id, author_id, title, content, image_path, created_at
+**users**  id, username, email, password, role (`customer` / `admin`)
+**invoices**  id, owner_id, amount, description
+**posts**  id, author_id, title, content, image_path, created_at
 
 ## Seeded accounts
 
@@ -88,14 +88,7 @@ Each vulnerability is marked in `app.py` with a `VULN` comment tag at the releva
 | E | Mass Assignment | `/api/register` | ✅ Implemented |
 | F | Stored XSS | Announcement post content (`view_post.html`) | ✅ Implemented |
 | G | Unrestricted File Upload | Announcement image upload (`/ui/posts/new`) | ✅ Implemented |
-| — | Reflected XSS | TBD | ⏳ Planned |
-| — | DOM-based XSS | TBD | ⏳ Planned |
-| — | Hidden/undocumented API endpoint | TBD | ⏳ Planned |
-| — | API exploitation via exposed documentation | TBD | ⏳ Planned |
-| — | LLM: Excessive Agency | Customer support chatbot | ⏳ Planned |
-| — | LLM: API vulnerabilities | Customer support chatbot | ⏳ Planned |
-| — | LLM: Indirect Prompt Injection | Customer support chatbot | ⏳ Planned |
-| — | LLM: Insecure Output Handling | Customer support chatbot | ⏳ Planned |
+
 
 Detailed exploitation write-ups (commands, screenshots, findings) for each vulnerability are documented separately in [enterprise-homelab-pentest/docs/06-web-exploitation.md](https://github.com/Ife41/enterprise-homelab-pentest/blob/main/docs/06-web-exploitation.md).
 
@@ -105,8 +98,8 @@ Detailed exploitation write-ups (commands, screenshots, findings) for each vulne
 
 A couple of deliberate decisions worth explaining rather than leaving as apparent oversights:
 
-- **Passwords are stored in plain text.** This wasn't built as a specific "weak password storage" vulnerability lesson — it's a simplification to keep focus on the vulnerabilities actually being studied (IDOR, injection, etc.). In a real audit, this would itself be a critical finding (missing password hashing).
-- **`debug=True` is enabled in `app.py`.** Convenient for local development (auto-reload, detailed error pages), but a genuine security risk in any real deployment — never used in production.
+- **Passwords are stored in plain text.** This wasn't built as a specific "weak password storage" vulnerability lesson, it's a simplification to keep focus on the vulnerabilities actually being studied (IDOR, injection, etc.). In a real audit, this would itself be a critical finding (missing password hashing).
+- **`debug=True` is enabled in `app.py`.** Convenient for local development (auto-reload, detailed error pages), but a genuine security risk in any real deployment, never used in production.
 
 ## Roadmap
 
