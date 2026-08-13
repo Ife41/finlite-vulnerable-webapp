@@ -1,9 +1,9 @@
 """
-FinLite - A demo fintech-style organization web app used to practice and
+FinLite: A demo fintech-style organization web app used to practice and
 demonstrate multiple vulnerability classes. Each intentional vulnerability
 is clearly commented with a VULN tag.
 
-INTENTIONALLY VULNERABLE. For isolated lab use only - never expose this
+INTENTIONALLY VULNERABLE. For isolated lab use only, never expose this
 to an untrusted network or the public internet.
 """
 
@@ -95,7 +95,7 @@ def login():
 
     user = find_user_by_username(username)
 
-    # VULN A: Broken Authentication - different error messages leak
+    # VULN A: Broken Authentication, different error messages leak
     # whether a username exists, before password verification happens.
     if not user:
         return jsonify({"error": "User does not exist"}), 401
@@ -136,7 +136,7 @@ def api_register():
 
     conn = get_db()
     try:
-        # VULN E: Mass Assignment - every client-supplied field is
+        # VULN E: Mass Assignment, every client-supplied field is
         # inserted directly, including "role" if present. No whitelist
         # restricts which fields the client may set.
         cursor = conn.execute(
@@ -206,14 +206,14 @@ def get_invoice(invoice_id):
     if not invoice:
         return jsonify({"error": "Invoice not found"}), 404
 
-    # VULN B: IDOR - no check that invoice["owner_id"] == session["user_id"]
+    # VULN B: IDOR  no check that invoice["owner_id"] == session["user_id"]
     return jsonify(dict(invoice))
 
 
 @app.route("/invoices/all")
 @login_required
 def get_all_invoices():
-    # VULN C: IDOR via trusted client header - a client-supplied header
+    # VULN C: IDOR via trusted client header, a client-supplied header
     # decides admin access instead of checking the real role in the DB.
     is_admin_header = request.headers.get("X-Admin", "false").lower() == "true"
 
@@ -235,7 +235,7 @@ def search_invoices():
     q = request.args.get("q", "")
 
     conn = get_db()
-    # VULN D: SQL Injection - string formatting directly into SQL,
+    # VULN D: SQL Injection, string formatting directly into SQL,
     # no parameterization.
     query = f"SELECT * FROM invoices WHERE description LIKE '%{q}%'"
     try:
@@ -359,7 +359,7 @@ def new_post_page():
     image_filename = None
     uploaded_file = request.files.get("image")
     if uploaded_file and uploaded_file.filename:
-        # VULN G: Unrestricted File Upload - no extension, content-type,
+        # VULN G: Unrestricted File Upload  no extension, content-type,
         # or filename validation. The client-supplied filename is trusted
         # directly, which also opens the door to path traversal.
         image_filename = uploaded_file.filename
@@ -368,7 +368,7 @@ def new_post_page():
 
     conn = get_db()
     # VULN F (storage side): content is stored exactly as submitted,
-    # with no sanitization - the vulnerability is completed at display
+    # with no sanitization, the vulnerability is completed at display
     # time in view_post.html.
     conn.execute(
         "INSERT INTO posts (author_id, title, content, image_path) VALUES (?, ?, ?, ?)",
