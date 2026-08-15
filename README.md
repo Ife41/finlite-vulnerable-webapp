@@ -11,7 +11,7 @@ This project was built after noticing **IDOR (Insecure Direct Object Reference)*
 ## Why this project exists
 
 - **Practical AppSec skill-building**  designing an app *and* attacking it builds a fuller understanding of vulnerabilities than either alone.
-- **A realistic target for a build-time IDOR detection tool**  a related project (Semgrep rule + CI/CD pipeline) uses this app's known-vulnerable endpoints as its test case. See [finlite-idor-detection](#) *(link once published)*.
+- **A realistic target for a build-time IDOR detection tool**  a related project (Semgrep rule + CI/CD pipeline) uses this app's known-vulnerable endpoints as its test case. See [finlite-idor-detection](https://github.com/Ife41/finlite-idor-detection)
 - **A documented exploitation target** the actual attack write-up against this app lives in a separate repo: [enterprise-homelab-pentest](https://github.com/Ife41/enterprise-homelab-pentest/blob/main/docs/06-web-exploitation.md)
 
 ---
