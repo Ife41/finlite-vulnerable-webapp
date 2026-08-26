@@ -92,7 +92,7 @@ The app runs on Flask's default local server. Check `app.py` for the port and an
 
 ## Related repos
 
-- [`sast-idor-bola-detection`](https://github.com/Ife41/sast-idor-bola-detection): custom Semgrep rules and a CI pipeline built to catch the IDOR and header-based authorization bypass patterns used in this app.
+- [`sast-idor-bola-detection`]([https://github.com/Ife41/finlite-idor-detection]): custom Semgrep rules and a CI pipeline built to catch the IDOR and header-based authorization bypass patterns used in this app.
 - `enterprise-homelab-pentest`: a self-built Windows Server lab used to practice exploiting FinVault from an external attacker's perspective, including web exploitation and SMB/FTP/SSH service attacks.
 
 ## Disclaimer
