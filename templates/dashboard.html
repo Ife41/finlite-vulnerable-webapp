@@ -1,16 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - FinLite{% endblock %}
+{% block title %}Dashboard - FinVault{% endblock %}
 {% block content %}
-<h1>Your invoices</h1>
-<p class="subtitle">Logged in as <strong>{{ user.username }}</strong> <span class="role-badge">{{ user.role }}</span></p>
+<h1>Welcome back, {{ user.username|capitalize }}</h1>
+<p class="subtitle"><span class="role-badge">{{ user.role }}</span></p>
+
+{% if accounts %}
+  {% for acc in accounts %}
+  <div class="balance-hero">
+    <div class="balance-hero-label">{{ acc.account_type }} Account</div>
+    <div class="balance-hero-amount">{{ acc.currency }} {{ "{:,.2f}".format(acc.balance) }}</div>
+    <div class="balance-hero-meta">
+      <span class="masked-number">&bull;&bull;&bull;&bull; {{ acc.account_number[-4:] }}</span>
+      <span class="status-pill {{ acc.status }}">{{ acc.status }}</span>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="card"><div class="empty-state">No accounts yet. <a href="{{ url_for('accounts_page') }}">Open one</a>.</div></div>
+{% endif %}
+
 <div class="card">
+  <h2>Recent Notifications</h2>
+  {% if notifications %}
+    {% for n in notifications %}
+    <p style="font-size:14px; margin:8px 0;">{{ n.message | safe }}</p>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">No notifications yet.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Recent Invoices</h2>
   {% if invoices %}
   <table>
-    <thead><tr><th>Invoice ID</th><th>Description</th><th>Amount</th></tr></thead>
+    <thead><tr><th>Invoice</th><th>Description</th><th>Amount</th></tr></thead>
     <tbody>
       {% for inv in invoices %}
       <tr>
-        <td class="invoice-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td>
+        <td class="masked-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td>
         <td>{{ inv.description }}</td>
         <td class="amount">${{ "%.2f"|format(inv.amount) }}</td>
       </tr>
