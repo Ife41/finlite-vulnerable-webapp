@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Verify Account - FinVault{% endblock %}
+{% block content %}
+<h1>Verify External Account</h1>
+<p class="subtitle">FinVault will contact the provided URL to confirm the account details</p>
+
+<div class="card">
+  {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+  <form method="post" action="{{ url_for('verify_account_page') }}">
+    <div class="field">
+      <label for="url">Verification URL</label>
+      <input type="text" id="url" name="url" placeholder="https://partner-bank.example.com/verify/12345" required>
+    </div>
+    <button type="submit" class="btn">Verify</button>
+  </form>
+</div>
+
+{% if result %}
+<div class="card">
+  <h2>Response</h2>
+  <table>
+    <tbody>
+      <tr><td><strong>Status code</strong></td><td>{{ result.status_code }}</td></tr>
+    </tbody>
+  </table>
+  <p class="helper-text">Response snippet:</p>
+  <pre style="background:var(--paper); border:1px solid var(--border); border-radius:6px; padding:12px; font-size:12px; overflow-x:auto; white-space:pre-wrap;">{{ result.snippet }}</pre>
+</div>
+{% endif %}
+{% endblock %}
