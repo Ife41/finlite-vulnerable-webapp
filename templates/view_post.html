@@ -1,15 +1,11 @@
 {% extends "base.html" %}
-{% block title %}{{ post.title }} - FinLite{% endblock %}
+{% block title %}{{ post.title }} - FinVault{% endblock %}
 {% block content %}
 <p class="subtitle"><a href="{{ url_for('posts_page') }}">&larr; Back to announcements</a></p>
 <h1>{{ post.title }}</h1>
 <p class="helper-text">{{ post.created_at }}</p>
 <div class="card">
-  {% if post.image_path %}
-  <img src="{{ url_for('static', filename='uploads/' + post.image_path) }}" style="max-width:100%; border-radius:6px; margin-bottom:16px;">
-  {% endif %}
-  <!-- VULN F: |safe disables Jinja2's automatic HTML escaping, so any
-       HTML/JS stored in post.content executes for every visitor. -->
+  {% if post.image_path %}<img src="{{ url_for('static', filename='uploads/' + post.image_path) }}" style="max-width:100%; border-radius:6px; margin-bottom:16px;">{% endif %}
   <div>{{ post.content | safe }}</div>
 </div>
 {% endblock %}
