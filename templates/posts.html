@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Announcements - FinLite{% endblock %}
+{% block title %}Announcements - FinVault{% endblock %}
 {% block content %}
 <h1>Company Announcements</h1>
-<p class="subtitle">Updates and news from the FinLite team</p>
 {% if session.get('role') == 'admin' %}
 <p><a href="{{ url_for('new_post_page') }}" class="btn" style="width:auto; display:inline-block; padding:8px 16px;">+ New Announcement</a></p>
 {% endif %}
@@ -14,8 +13,6 @@
       <p class="helper-text" style="margin:0 0 8px 0;">{{ post.created_at }}</p>
     </div>
     {% endfor %}
-  {% else %}
-  <div class="empty-state">No announcements yet.</div>
-  {% endif %}
+  {% else %}<div class="empty-state">No announcements yet.</div>{% endif %}
 </div>
 {% endblock %}
