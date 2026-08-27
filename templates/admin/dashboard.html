@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - FinVault{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<p class="subtitle">
+  <a href="{{ url_for('admin_users') }}">Users</a> &nbsp;|&nbsp;
+  <a href="{{ url_for('admin_loans') }}">Loans</a>
+</p>
+<div class="card">
+  <table>
+    <tbody>
+      <tr><td><strong>Total users</strong></td><td>{{ counts.users }}</td></tr>
+      <tr><td><strong>Total accounts</strong></td><td>{{ counts.accounts }}</td></tr>
+      <tr><td><strong>Total transactions</strong></td><td>{{ counts.transactions }}</td></tr>
+      <tr><td><strong>Total loan applications</strong></td><td>{{ counts.loans }}</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
