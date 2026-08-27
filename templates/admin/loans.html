@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin - Loans - FinVault{% endblock %}
+{% block content %}
+<p class="subtitle"><a href="{{ url_for('admin_dashboard') }}">&larr; Back to admin dashboard</a></p>
+<h1>Loan Applications</h1>
+<div class="card">
+  {% if loans %}
+  <table>
+    <thead><tr><th>Applicant</th><th>Amount</th><th>Purpose</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for l in loans %}
+      <tr>
+        <td>{{ l.username }}</td>
+        <td class="amount">${{ "%.2f"|format(l.amount) }}</td>
+        <td>{{ l.purpose }}</td>
+        <td>{{ l.status }}</td>
+        <td>
+          {% if l.status == 'Pending' %}
+          <form method="post" action="{{ url_for('admin_loan_action', loan_id=l.id, action='approve') }}" style="display:inline;">
+            <button type="submit" class="link-btn" style="color:var(--success);">Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('admin_loan_action', loan_id=l.id, action='reject') }}" style="display:inline;">
+            <button type="submit" class="link-btn" style="color:var(--danger);">Reject</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<div class="empty-state">No loan applications.</div>{% endif %}
+</div>
+{% endblock %}
