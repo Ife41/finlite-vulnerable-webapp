@@ -83,7 +83,8 @@ cd finlite-vulnerable-webapp
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python app.py
+python3 db_setup.py        # <-- creates and seeds finlite.db, needed before first run
+python3 app.py
 ```
 
 The app runs on Flask's default local server. Check `app.py` for the port and any environment variables (such as the Ollama endpoint) before starting.
