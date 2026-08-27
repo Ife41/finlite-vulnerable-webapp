@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Search invoices - FinLite{% endblock %}
+{% block title %}Search invoices - FinVault{% endblock %}
 {% block content %}
 <h1>Search invoices</h1>
 <form method="get" action="{{ url_for('search_page') }}" class="search-row">
@@ -7,28 +7,18 @@
   <button type="submit">Search</button>
 </form>
 <div class="card">
-  {% if error %}
-  <div class="error-box">{{ error }}</div>
+  {% if error %}<div class="error-box">{{ error }}</div>
   {% elif results is not none %}
     {% if results %}
     <table>
       <thead><tr><th>Invoice ID</th><th>Owner ID</th><th>Description</th><th>Amount</th></tr></thead>
       <tbody>
         {% for inv in results %}
-        <tr>
-          <td class="invoice-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td>
-          <td class="invoice-id">{{ inv.owner_id }}</td>
-          <td>{{ inv.description }}</td>
-          <td class="amount">${{ "%.2f"|format(inv.amount) }}</td>
-        </tr>
+        <tr><td class="invoice-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td><td class="invoice-id">{{ inv.owner_id }}</td><td>{{ inv.description }}</td><td class="amount">${{ "%.2f"|format(inv.amount) }}</td></tr>
         {% endfor %}
       </tbody>
     </table>
-    {% else %}
-    <div class="empty-state">No results found.</div>
-    {% endif %}
-  {% else %}
-  <div class="empty-state">Enter a search term above.</div>
-  {% endif %}
+    {% else %}<div class="empty-state">No results found.</div>{% endif %}
+  {% else %}<div class="empty-state">Enter a search term above.</div>{% endif %}
 </div>
 {% endblock %}
