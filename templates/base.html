@@ -3,36 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}FinLite{% endblock %}</title>
+  <title>{% block title %}FinVault{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  {% if session.get('user_id') %}
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="{{ url_for('dashboard_page') }}" class="brand">FinLite</a>
-      <nav class="topnav">
-        <a href="{{ url_for('dashboard_page') }}">Dashboard</a>
-        <a href="{{ url_for('search_page') }}">Search invoices</a>
-        <a href="{{ url_for('posts_page') }}">Announcements</a>
+  <div class="app-shell">
+    {% if session.get('user_id') %}
+    <aside class="sidebar">
+      <div class="sidebar-brand">Fin<span>Vault</span></div>
+      <nav class="sidebar-nav">
+        <a href="{{ url_for('dashboard_page') }}" class="{{ 'active' if request.endpoint == 'dashboard_page' }}">Dashboard</a>
+        <a href="{{ url_for('accounts_page') }}" class="{{ 'active' if request.endpoint in ['accounts_page', 'account_detail_page'] }}">Accounts</a>
+        <a href="{{ url_for('all_invoices_page') }}" class="{{ 'active' if request.endpoint in ['all_invoices_page', 'invoice_page'] }}">Invoices</a>
+        <a href="{{ url_for('transfer_page') }}" class="{{ 'active' if request.endpoint == 'transfer_page' }}">Transfer</a>
+        <a href="{{ url_for('beneficiaries_page') }}" class="{{ 'active' if request.endpoint == 'beneficiaries_page' }}">Beneficiaries</a>
+        <a href="{{ url_for('transactions_page') }}" class="{{ 'active' if request.endpoint == 'transactions_page' }}">Transactions</a>
+        <a href="{{ url_for('deposit_page') }}" class="{{ 'active' if request.endpoint == 'deposit_page' }}">Deposit</a>
+        <a href="{{ url_for('verify_account_page') }}" class="{{ 'active' if request.endpoint == 'verify_account_page' }}">Verify Account</a>
+        <a href="{{ url_for('cards_page') }}" class="{{ 'active' if request.endpoint in ['cards_page', 'card_detail_page'] }}">Cards</a>
+        <a href="{{ url_for('loans_page') }}" class="{{ 'active' if request.endpoint == 'loans_page' }}">Loans</a>
+        <a href="{{ url_for('notifications_page') }}" class="{{ 'active' if request.endpoint == 'notifications_page' }}">Notifications</a>
+        <a href="{{ url_for('posts_page') }}" class="{{ 'active' if request.endpoint in ['posts_page', 'view_post_page', 'new_post_page'] }}">Announcements</a>
+
+        {# Admin link only shown to admins. This is UX convenience only -   #}
+        {# the /admin routes have their own (deliberately weak) protection #}
+        {# mechanism; hiding this link does not itself secure anything.    #}
+        {% if session.get('role') == 'admin' %}
+        <div class="nav-divider"></div>
+        <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin_') }}">Admin panel</a>
+        {% endif %}
       </nav>
-      <div class="topbar-user">
-        <span class="user-chip">{{ session_username }}</span>
-        <form action="{{ url_for('logout_page') }}" method="post" class="inline-form">
+      <div class="sidebar-footer">
+        <div class="sidebar-user">{{ session_username }} &middot; {{ session.get('role') }}</div>
+        <form action="{{ url_for('logout_page') }}" method="post">
           <button type="submit" class="link-btn">Log out</button>
         </form>
       </div>
-    </div>
-  </header>
-  {% endif %}
+    </aside>
+    {% else %}
+    <div class="logged-out-brand">Fin<span>Vault</span></div>
+    {% endif %}
 
-  <main class="page">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flash">{{ messages[0] }}</div>
-      {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </main>
+    <div class="content">
+      <main class="page">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  {% if session.get('user_id') %}
+  {% set just_solved_id = session.pop('just_solved', None) %}
+
+  <!-- Solved-vulnerability toast -->
+  <div id="vuln-toast" class="vuln-toast" style="display:none;">
+    <div class="vuln-toast-title">Vulnerability solved</div>
+    <div class="vuln-toast-body" id="vuln-toast-body"></div>
+  </div>
+
+  <!-- AI chatbot widget -->
+  <button id="chat-toggle" class="chat-toggle" aria-label="Open support chat">Chat</button>
+  <div id="chat-panel" class="chat-panel" style="display:none;">
+    <div class="chat-panel-header">
+      FinVault Assistant
+      <button id="chat-close" class="link-btn" style="color:#fff; float:right;">&times;</button>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <form id="chat-form" class="chat-form">
+      <input type="text" id="chat-input" placeholder="Ask a question..." autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const VULN_TITLES = {
+      {% for v in [{"id":"A","title":"Broken Authentication"},{"id":"B","title":"IDOR - Invoices"},{"id":"C","title":"Trusted Header Bypass"},{"id":"D","title":"SQL Injection"},{"id":"E","title":"Mass Assignment - Registration"},{"id":"F","title":"Stored XSS - Announcements"},{"id":"G","title":"Unrestricted File Upload"},{"id":"H","title":"IDOR - Accounts"},{"id":"I","title":"IDOR - Money Movement"},{"id":"J","title":"Business Logic - Overdraft"},{"id":"K","title":"Stored XSS - Beneficiaries"},{"id":"L","title":"IDOR - Beneficiary Deletion"},{"id":"M","title":"IDOR - Transactions"},{"id":"N","title":"SSRF"},{"id":"O","title":"IDOR - Cards"},{"id":"P","title":"Mass Assignment - Loans"},{"id":"Q","title":"Broken Access Control - Admin"},{"id":"R","title":"AI Chatbot - Excessive Agency"}] %}
+      "{{ v.id }}": "{{ v.title }}"{{ "," if not loop.last }}
+      {% endfor %}
+    };
+
+    function showVulnToast(vulnId) {
+      if (!vulnId || !VULN_TITLES[vulnId]) return;
+      const toast = document.getElementById('vuln-toast');
+      const body = document.getElementById('vuln-toast-body');
+      body.textContent = vulnId + ". " + VULN_TITLES[vulnId];
+      toast.style.display = 'block';
+      toast.classList.add('vuln-toast-show');
+      setTimeout(() => {
+        toast.classList.remove('vuln-toast-show');
+        setTimeout(() => { toast.style.display = 'none'; }, 400);
+      }, 4500);
+    }
+
+    {% if just_solved_id %}
+    document.addEventListener('DOMContentLoaded', () => showVulnToast("{{ just_solved_id }}"));
+    {% endif %}
+
+    // Chat widget
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatPanel = document.getElementById('chat-panel');
+    const chatClose = document.getElementById('chat-close');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    chatToggle.addEventListener('click', () => {
+      chatPanel.style.display = chatPanel.style.display === 'none' ? 'flex' : 'none';
+    });
+    chatClose.addEventListener('click', () => { chatPanel.style.display = 'none'; });
+
+    function addChatMessage(role, text) {
+      const div = document.createElement('div');
+      div.className = 'chat-msg chat-msg-' + role;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      addChatMessage('user', msg);
+      chatInput.value = '';
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        if (data.error) {
+          addChatMessage('assistant', 'Error: ' + data.error);
+        } else {
+          addChatMessage('assistant', data.reply);
+          if (data.just_solved) showVulnToast(data.just_solved);
+        }
+      } catch (err) {
+        addChatMessage('assistant', 'Something went wrong reaching the assistant.');
+      }
+    });
+  </script>
+  {% endif %}
 </body>
 </html>
