@@ -1,4 +1,3 @@
-
 """
 FinVault (extended FinLite) - A demo fintech-style organization web app
 used to practice and demonstrate multiple vulnerability classes across a
@@ -29,6 +28,7 @@ import secrets
 import random
 import base64
 import json
+import html
 import requests
 
 app = Flask(__name__)
@@ -339,7 +339,7 @@ def search_invoices():
     q = request.args.get("q", "")
 
     conn = get_db()
-    query = f"SELECT * FROM invoices WHERE description LIKE '%{q}%'"
+    query = f"SELECT * FROM invoices WHERE description LIKE '%{q}%' OR id = '{q}'"
     try:
         results = conn.execute(query).fetchall()
     except sqlite3.OperationalError as e:
@@ -398,7 +398,7 @@ def logout_page():
     return resp
 
 
-@app.route("/meme/dashboard")
+@app.route("/ui/dashboard")
 @login_required_ui
 def dashboard_page():
     conn = get_db()
@@ -438,7 +438,7 @@ def search_page():
 
     if q is not None:
         conn = get_db()
-        query = f"SELECT * FROM invoices WHERE description LIKE '%{q}%'"
+        query = f"SELECT * FROM invoices WHERE description LIKE '%{q}%' OR id = '{q}'"
         try:
             results = conn.execute(query).fetchall()
         except sqlite3.OperationalError as e:
@@ -478,7 +478,7 @@ def view_post_page(post_id):
 
 
 @app.route("/ui/posts/new", methods=["GET", "POST"])
-@login_required_ui
+@admin_required_ui
 def new_post_page():
     if request.method == "GET":
         return render_template("new_post.html", error=None)
@@ -489,7 +489,7 @@ def new_post_page():
     if not title or not content:
         return render_template("new_post.html", error="Title and content are required")
 
-    if "<script" in content.lower():
+    if "<p><script>/" in content.lower():
         mark_solved("F")
 
     image_filename = None
@@ -640,6 +640,27 @@ def transfer_page():
 # Beneficiaries
 # ---------------------------------------------------------------------------
 
+@app.route("/ui/beneficiaries/confirm")
+@login_required_ui
+def beneficiary_confirm_page():
+    # VULN K: Reflected XSS - these values come straight from the URL's
+    # query string and are rendered back immediately in this response
+    # with |safe, never touching the database. A malicious link crafted
+    # with a <script> payload in the name parameter executes the moment
+    # a logged-in victim opens it - nothing is stored, nothing persists.
+    name = request.args.get("name", "")
+    account_number = request.args.get("account_number", "")
+    bank_name = request.args.get("bank_name", "FinVault")
+
+    if "<script" in name.lower():
+        mark_solved("K")
+
+    return render_template(
+        "beneficiary_confirm.html",
+        name=name, account_number=account_number, bank_name=bank_name
+    )
+
+
 @app.route("/ui/beneficiaries", methods=["GET", "POST"])
 @login_required_ui
 def beneficiaries_page():
@@ -650,16 +671,16 @@ def beneficiaries_page():
         account_number = request.form.get("account_number", "")
         bank_name = request.form.get("bank_name", "FinVault")
 
-        if "<script" in name.lower():
-            mark_solved("K")
-
         conn.execute(
             "INSERT INTO beneficiaries (owner_id, name, account_number, bank_name) VALUES (?, ?, ?, ?)",
             (session["user_id"], name, account_number, bank_name)
         )
         conn.commit()
 
-        add_notification(session["user_id"], f"New beneficiary added: {name}")
+        # Escaped here deliberately - the reflected-XSS surface for
+        # beneficiary names lives only in the confirm step above, not in
+        # this stored notification.
+        add_notification(session["user_id"], f"New beneficiary added: {html.escape(name)}")
 
     beneficiaries = conn.execute("SELECT * FROM beneficiaries WHERE owner_id = ?", (session["user_id"],)).fetchall()
     conn.close()
@@ -1181,8 +1202,8 @@ VULNERABILITIES = [
      "hint": "The search feature builds a query from your input. Try breaking out of the expected string with a quote."},
     {"id": "E", "title": "Mass Assignment - Registration", "difficulty": "medium",
      "hint": "The signup form only asks for a few fields. Does the API behind it accept more than the form offers?"},
-    {"id": "F", "title": "Stored XSS - Announcements", "difficulty": "easy",
-     "hint": "Announcement content looks like it might render as HTML. What happens if you post a script tag?"},
+    {"id": "F", "title": "Stored XSS - Announcements", "difficulty": "medium",
+     "hint": "Announcement content is saved and shown to anyone who opens that post later. What happens if you post a script tag?"},
     {"id": "G", "title": "Unrestricted File Upload", "difficulty": "medium",
      "hint": "The announcement form lets you attach an image. Is the file type actually checked?"},
     {"id": "H", "title": "IDOR - Account Details", "difficulty": "easy",
@@ -1191,8 +1212,8 @@ VULNERABILITIES = [
      "hint": "The transfer form lets you pick a 'from' account. Is that selection actually verified server-side?"},
     {"id": "J", "title": "Business Logic - Overdraft", "difficulty": "medium",
      "hint": "Try transferring more money than an account actually has."},
-    {"id": "K", "title": "Stored XSS - Beneficiaries", "difficulty": "medium",
-     "hint": "Beneficiary names show up elsewhere in the app after you add one. Is that name sanitized everywhere?"},
+    {"id": "K", "title": "Reflected XSS - Beneficiary Confirmation", "difficulty": "easy",
+     "hint": "Adding a beneficiary goes through a confirmation step first. What's shown there comes straight from the link, not the database."},
     {"id": "L", "title": "IDOR - Beneficiary Deletion", "difficulty": "easy",
      "hint": "Deleting a beneficiary uses an ID in the request. Whose beneficiaries can you actually delete?"},
     {"id": "M", "title": "IDOR - Transaction History", "difficulty": "easy",
