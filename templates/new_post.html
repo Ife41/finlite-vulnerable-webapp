@@ -1,24 +1,13 @@
 {% extends "base.html" %}
-{% block title %}New Announcement - FinLite{% endblock %}
+{% block title %}New Announcement - FinVault{% endblock %}
 {% block content %}
 <h1>New Announcement</h1>
 <div class="card">
-  {% if error %}
-  <div class="error-box">{{ error }}</div>
-  {% endif %}
+  {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
   <form method="post" action="{{ url_for('new_post_page') }}" enctype="multipart/form-data">
-    <div class="field">
-      <label for="title">Title</label>
-      <input type="text" id="title" name="title" required>
-    </div>
-    <div class="field">
-      <label for="content">Content (HTML allowed)</label>
-      <textarea id="content" name="content" rows="8" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px;" required></textarea>
-    </div>
-    <div class="field">
-      <label for="image">Attach an image (optional)</label>
-      <input type="file" id="image" name="image">
-    </div>
+    <div class="field"><label for="title">Title</label><input type="text" id="title" name="title" required></div>
+    <div class="field"><label for="content">Content (HTML allowed)</label><textarea id="content" name="content" rows="8" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px;" required></textarea></div>
+    <div class="field"><label for="image">Attach an image (optional)</label><input type="file" id="image" name="image"></div>
     <button type="submit" class="btn">Publish</button>
   </form>
 </div>
