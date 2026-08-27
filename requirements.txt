@@ -1,2 +1,6 @@
-Flask>=3.0
-requests>=2.31
+# FinVault Python dependencies
+# Python 3.x
+
+Flask==3.1.2
+requests==2.32.5
+ollama==0.5.4
