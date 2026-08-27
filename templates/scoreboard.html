@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Vulnerability Scoreboard - FinVault{% endblock %}
+{% block content %}
+<h1>Vulnerability Scoreboard</h1>
+<p class="subtitle">{{ solved_count }} / {{ total }} solved. Hints only, no spoilers, find the actual flaw yourself.</p>
+
+<div class="card" style="display:flex; gap:24px; margin-bottom:24px;">
+  <div><span class="difficulty-badge easy">Easy</span> &nbsp;{{ counts.easy }}</div>
+  <div><span class="difficulty-badge medium">Medium</span> &nbsp;{{ counts.medium }}</div>
+  <div><span class="difficulty-badge hard">Hard</span> &nbsp;{{ counts.hard }}</div>
+</div>
+
+<div class="scoreboard-grid">
+  {% for v in vulnerabilities %}
+  <div class="vuln-card difficulty-{{ v.difficulty }} {{ 'solved' if v.id in solved }}">
+    <div class="vuln-card-main">
+      <div class="vuln-card-title">{{ v.id }}. {{ v.title }}</div>
+      <div class="vuln-card-desc">{{ v.hint }}</div>
+    </div>
+    {% if v.id in solved %}
+    <span class="solved-check" title="Solved">&check;</span>
+    {% endif %}
+    <span class="difficulty-badge {{ v.difficulty }}">{{ v.difficulty }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

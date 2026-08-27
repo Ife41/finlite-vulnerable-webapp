@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Card details - FinVault{% endblock %}
+{% block content %}
+<p class="subtitle"><a href="{{ url_for('cards_page') }}">&larr; Back to cards</a></p>
+<h1>Card details</h1>
+
+<div class="balance-hero" style="max-width:360px;">
+  <div class="balance-hero-label">FinVault</div>
+  <div class="balance-hero-amount" style="font-size:19px; letter-spacing:2.5px; margin-bottom:20px;">{{ card.card_number }}</div>
+  <div class="balance-hero-meta">
+    <span>Owner ID: {{ card.owner_id }}</span>
+    <span>EXP {{ card.expiry }}</span>
+  </div>
+</div>
+
+<div class="card">
+  <table>
+    <tbody>
+      <tr><td><strong>Status</strong></td><td><span class="status-pill {{ card.status }}" style="color:inherit; background:none; padding:0;">{{ card.status }}</span></td></tr>
+      <tr><td><strong>Spending limit</strong></td><td class="amount">${{ "%.2f"|format(card.spending_limit) }}</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:16px; display:flex; gap:12px;">
+    <form method="post" action="{{ url_for('toggle_freeze_card', card_id=card.id) }}">
+      <button type="submit" class="btn" style="width:auto; padding:8px 16px;">{% if card.status == 'active' %}Freeze{% else %}Unfreeze{% endif %}</button>
+    </form>
+    <form method="post" action="{{ url_for('delete_card', card_id=card.id) }}">
+      <button type="submit" class="link-btn" style="color:var(--danger);">Delete card</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

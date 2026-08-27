@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}All Invoices - FinVault{% endblock %}
+{% block content %}
+<h1>Invoices</h1>
+<p class="subtitle">{% if session.get('role') == 'admin' %}Showing all invoices (admin view){% else %}Showing your invoices{% endif %}</p>
+
+<form method="get" action="{{ url_for('search_page') }}" class="search-row">
+  <input type="text" name="q" placeholder="Search by description or invoice number">
+  <button type="submit">Search</button>
+</form>
+
+<div class="card">
+  {% if invoices %}
+  <table>
+    <thead><tr><th>Invoice</th><th>Owner ID</th><th>Description</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr>
+        <td class="masked-id"><a href="{{ url_for('invoice_page', invoice_id=inv.id) }}">#{{ inv.id }}</a></td>
+        <td class="masked-id">{{ inv.owner_id }}</td>
+        <td>{{ inv.description }}</td>
+        <td class="amount">${{ "%.2f"|format(inv.amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No invoices found.</div>
+  {% endif %}
+</div>
+{% endblock %}

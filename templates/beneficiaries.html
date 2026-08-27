@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Beneficiaries - FinVault{% endblock %}
+{% block content %}
+<h1>Beneficiaries</h1>
+<div class="card">
+  {% if beneficiaries %}
+  <table>
+    <thead><tr><th>Name</th><th>Account</th><th>Bank</th><th></th></tr></thead>
+    <tbody>
+      {% for b in beneficiaries %}
+      <tr>
+        <td>{{ b.name }}</td>
+        <td class="masked-id">{{ b.account_number }}</td>
+        <td>{{ b.bank_name }}</td>
+        <td>
+          <form method="post" action="{{ url_for('delete_beneficiary', beneficiary_id=b.id) }}" style="display:inline;">
+            <button type="submit" class="link-btn" style="color:var(--danger);">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<div class="empty-state">No beneficiaries yet.</div>{% endif %}
+</div>
+
+<div class="card">
+  <h2>Add a beneficiary</h2>
+  <form method="get" action="{{ url_for('beneficiary_confirm_page') }}">
+    <div class="field"><label for="name">Name</label><input type="text" id="name" name="name" required></div>
+    <div class="field"><label for="account_number">Account number</label><input type="text" id="account_number" name="account_number" required></div>
+    <div class="field"><label for="bank_name">Bank</label><input type="text" id="bank_name" name="bank_name" value="FinVault"></div>
+    <button type="submit" class="btn">Continue</button>
+  </form>
+</div>
+{% endblock %}

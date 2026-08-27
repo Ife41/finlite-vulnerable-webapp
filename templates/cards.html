@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Cards - FinVault{% endblock %}
+{% block content %}
+<h1>Virtual Cards</h1>
+<p class="subtitle">Manage your FinVault virtual cards</p>
+
+{% if cards %}
+  {% for c in cards %}
+  <a href="{{ url_for('card_detail_page', card_id=c.id) }}" style="text-decoration:none;">
+    <div class="balance-hero" style="padding:20px 24px;">
+      <div class="balance-hero-label">Virtual Card</div>
+      <div class="balance-hero-amount" style="font-size:20px; letter-spacing:2px;">{{ c.card_number }}</div>
+      <div class="balance-hero-meta">
+        <span>Limit: {{ "{:,.2f}".format(c.spending_limit) }}</span>
+        <span class="status-pill {{ c.status }}">{{ c.status }}</span>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+{% else %}
+<div class="card"><div class="empty-state">No cards yet.</div></div>
+{% endif %}
+
+<div class="card">
+  <form method="post" action="{{ url_for('cards_page') }}">
+    <button type="submit" class="btn btn-gold">Create new virtual card</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Notifications - FinVault{% endblock %}
+{% block content %}
+<h1>Notifications</h1>
+<div class="card">
+  {% if notifications %}
+    {% for n in notifications %}
+    <p style="font-size:14px; margin:10px 0; padding-bottom:10px; border-bottom:1px solid var(--border);">
+      {{ n.message | safe }} <span class="helper-text">{{ n.created_at }}</span>
+    </p>
+    {% endfor %}
+  {% else %}<div class="empty-state">No notifications yet.</div>{% endif %}
+</div>
+{% endblock %}

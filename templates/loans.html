@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Loans - FinVault{% endblock %}
+{% block content %}
+<h1>Loans</h1>
+<div class="card">
+  {% if loans %}
+  <table>
+    <thead><tr><th>Amount</th><th>Duration</th><th>Purpose</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for l in loans %}
+      <tr>
+        <td class="amount">${{ "%.2f"|format(l.amount) }}</td>
+        <td>{{ l.duration_months }} months</td>
+        <td>{{ l.purpose }}</td>
+        <td>{{ l.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<div class="empty-state">No loan applications yet.</div>{% endif %}
+</div>
+<div class="card">
+  <h2 style="font-size:16px; margin-top:0;">Apply for a loan</h2>
+  <form method="post" action="{{ url_for('loans_page') }}">
+    <div class="field"><label for="amount">Amount</label><input type="number" step="0.01" id="amount" name="amount" required></div>
+    <div class="field"><label for="duration">Duration (months)</label><input type="number" id="duration" name="duration" required></div>
+    <div class="field"><label for="purpose">Purpose</label><input type="text" id="purpose" name="purpose" required></div>
+    <button type="submit" class="btn">Apply</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Confirm Beneficiary - FinVault{% endblock %}
+{% block content %}
+<p class="subtitle"><a href="{{ url_for('beneficiaries_page') }}">&larr; Back</a></p>
+<h1>Confirm Beneficiary</h1>
+<p class="subtitle">Review the details below before adding</p>
+
+<div class="card">
+  <table>
+    <tbody>
+      <tr><td><strong>Name</strong></td><td>{{ name | safe }}</td></tr>
+      <tr><td><strong>Account number</strong></td><td class="masked-id">{{ account_number | safe }}</td></tr>
+      <tr><td><strong>Bank</strong></td><td>{{ bank_name | safe }}</td></tr>
+    </tbody>
+  </table>
+
+  <form method="post" action="{{ url_for('beneficiaries_page') }}" style="margin-top:16px;">
+    <input type="hidden" name="name" value="{{ name }}">
+    <input type="hidden" name="account_number" value="{{ account_number }}">
+    <input type="hidden" name="bank_name" value="{{ bank_name }}">
+    <button type="submit" class="btn">Confirm & Add</button>
+  </form>
+</div>
+{% endblock %}

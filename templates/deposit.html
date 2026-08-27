@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Deposit - FinVault{% endblock %}
+{% block content %}
+<h1>Deposit</h1>
+<div class="card">
+  {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+  <form method="post" action="{{ url_for('deposit_page') }}">
+    <div class="field">
+      <label for="account_id">To account</label>
+      <select id="account_id" name="account_id" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px;">
+        {% for acc in accounts %}
+        <option value="{{ acc.id }}">{{ acc.account_type }} - {{ acc.account_number }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field"><label for="amount">Amount</label><input type="number" step="0.01" id="amount" name="amount" required></div>
+    <div class="field">
+      <label for="method">Payment method</label>
+      <select id="method" name="method" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px;">
+        <option>Mock Payment Gateway</option>
+        <option>Bank Transfer</option>
+        <option>Card</option>
+      </select>
+    </div>
+    <button type="submit" class="btn">Deposit</button>
+  </form>
+</div>
+{% endblock %}

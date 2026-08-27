@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Transfer - FinVault{% endblock %}
+{% block content %}
+<h1>Transfer Money</h1>
+<p class="subtitle">Move funds between your accounts or to a beneficiary</p>
+<div class="card">
+  {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+  <form method="post" action="{{ url_for('transfer_page') }}">
+    <div class="field">
+      <label for="from_account">From</label>
+      <select id="from_account" name="from_account">
+        {% for acc in accounts %}
+        <option value="{{ acc.id }}">{{ acc.account_type }} &bull;&bull;&bull;&bull; {{ acc.account_number[-4:] }} ({{ acc.currency }} {{ "{:,.2f}".format(acc.balance) }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field"><label for="to_account">To (account number)</label><input type="text" id="to_account" name="to_account" required></div>
+    <div class="field"><label for="amount">Amount</label><input type="number" step="0.01" id="amount" name="amount" required></div>
+    <div class="field"><label for="reference">Reference</label><input type="text" id="reference" name="reference"></div>
+    <button type="submit" class="btn">Transfer</button>
+  </form>
+</div>
+{% endblock %}
